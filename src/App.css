@@ -26,3 +26,28 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+.board{
+  padding: 10px;
+
+}
+.table{
+  border: 1px solid black;
+
+}
+table.table, table.table tr, table.table td{
+  border-collapse: collapse;
+  margin: auto;
+}
+table.table td {
+  height: 70px;
+  width: 70px;
+  text-align: center;
+  font-size: 32px;
+  color: white;
+}
+.dark-square{
+  background: #556B2F;
+}
+.light-square{
+  background: #918151;
+}
