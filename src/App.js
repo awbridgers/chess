@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Chess from './chess.jsx'
+import Chess from 'chess.js'
+import Board from './board.jsx'
 
 const buildArray = () => {
   const innerArray = [1,2,3,4,5,6,7,8]
@@ -18,38 +19,18 @@ class App extends Component {
   constructor(){
     super();
     this.state = {board: buildArray()}
+    this.chess = new Chess();
+    this.clickSquare = this.clickSquare.bind(this)
+  }
+  clickSquare(e){
+    let possibleMoves = this.chess.moves({square: e.target.id})
+    console.log(possibleMoves)
+
   }
   render() {
     return (
       <div>
-        <div  className = 'board'>
-          <table className = 'table'>
-            <tbody>
-              {this.state.board.map((x,i)=>{
-                return(
-                  <tr key = {i} className = {"row" + i}>
-                    {x.map((y,j) => {
-                      if((i % 2 === 0 && j % 2 !=0) || (i % 2 != 0 && j % 2 === 0)){
-                        return (
-                          <td key ={j} className = {'dark-square'}>
-
-                          </td>
-                        )
-                      }
-                      else{
-                        return (
-                          <td key ={j} className = {'light-square'}>
-                            Q
-                          </td>
-                        )
-                      }
-                    })}
-                  </tr>
-                )
-              })}
-          </tbody>
-        </table>
-        </div>
+        <Board onClick = {this.clickSquare}/>
       </div>
 
     );

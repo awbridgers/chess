@@ -45,6 +45,14 @@ table.table td {
   font-size: 32px;
   color: white;
 }
+table tr:nth-child(odd) td:nth-child(odd),
+table tr:nth-child(even) td:nth-child(even) {
+  background: #556B2F;
+}
+table tr:nth-child(even) td:nth-child(odd),
+table tr:nth-child(odd) td:nth-child(even) {
+  background: #918151;
+}
 .dark-square{
   background: #556B2F;
 }
