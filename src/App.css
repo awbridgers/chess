@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background: black;
 }
 
 .App-logo {
@@ -31,11 +32,11 @@
 
 }
 .table{
-  border: 1px solid black;
+border-collapse: collapse;
 
 }
 table.table, table.table tr, table.table td{
-  border-collapse: collapse;
+
   margin: auto;
 }
 table.table td {
@@ -55,7 +56,21 @@ table tr:nth-child(odd) td:nth-child(even) {
 }
 .dark-square{
   background: #556B2F;
+
 }
 .light-square{
   background: #918151;
+
+}
+
+.targeted{
+  outline: 5px solid red;
+  outline-offset: -5.3px;
+}
+.possibleMove{
+  outline: 5px solid yellow;
+  outline-offset: -5.3px;
+}
+.normal {
+
 }
