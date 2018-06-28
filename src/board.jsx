@@ -9,9 +9,9 @@ export default class Board extends Component{
     super();
     this.readFEN = this.readFEN.bind(this);
     this.state = {fen: "rnbqkbnr/p1ppppp1/7p/1pP5/8/8/PP1PPPPP/RNBQKBNR w KQkq b6 0 3", pieceArray: [], target: "", moves:[]}
-    this.highlight = this.highlight.bind(this);
   }
   componentDidUpdate(prevProps){
+    //read in the props on update and convert them into array form
     if(this.props.fen !== prevProps.fen){
       this.readFEN();
     }
@@ -41,7 +41,6 @@ export default class Board extends Component{
         //if the current char isn't a number, its a piece, push to array
         if(isNaN(row[i])){
           piecePlacement.push(row[i]);
-
         }
         //the char is a number, fill that number of blanks in the array
         else{
@@ -56,13 +55,6 @@ export default class Board extends Component{
     this.setState({pieceArray: piecePlacement})
 
   }
-  highlight(e){
-    console.log(e.target.className)
-    this.setState({target:e.target.id})
-    console.log(this.state.target)
-  }
-
-
   render(){
     return(
       <div  className = 'board'>

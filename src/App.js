@@ -17,8 +17,13 @@ const returnSquare = (array, target) => {
     else{
       newString = square;
     }
+    //handle pawn promotions
+    if(newString.includes('=')){
+      temp = newString.substr(newString.length-4, 2);
+
+    }
     //handle castling
-    if(newString === 'O-O'){
+    else if(newString === 'O-O'){
       if(target === 'e1'){
         temp = "g1"
       }
@@ -48,22 +53,44 @@ const returnSquare = (array, target) => {
 class App extends Component {
   constructor(){
     super();
-    this.state = {target: "", fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'}
+    this.state = {target: "", fen: 'rnbk1bnr/pp1P1p1p/6p1/2p5/7q/5NP1/PPP1PPBP/RNBQ1RK1 w - - 1 9', gameOver: false, gameOverMessage: ""}
     this.chess = new Chess();
     this.clickSquare = this.clickSquare.bind(this);
     this.chooseTarget = this.chooseTarget.bind(this);
+    this.computerMove = this.computerMove.bind(this);
     this.possibleMoves =[];
     this.firstClick = false;
     this.secondClick = false;
     this.turn = 'player';
 
+
   }
   componentDidMount(){
+    //load in the starting position from state
     this.chess.load(this.state.fen)
   }
   componentDidUpdate(){
-    if(this.turn === 'computer'){
-      console.log("computer turn")
+    if(this.state.gameOver){
+      setTimeout(()=>alert(this.state.gameOverMessage),250);
+    }
+    if(!this.state.gameOver){
+      //if the game is in checkmate, alert the player
+      if(this.chess.in_checkmate()){
+        //if the player just moved, the comp must be in checkmate
+        if(this.turn === 'computer'){
+          this.setState({gameOver: true, gameOverMessage: "Checkmate! You Win"})
+        }
+        else{
+            this.setState({gameOver: true, gameOverMessage: "Checkmate! You Lose"})
+        }
+      }
+      if(this.chess.in_stalemate()){
+        alert("Stalemate! Game is a draw!")
+      }
+
+      if(this.turn === 'computer'){
+        this.computerMove();
+      }
     }
   }
   chooseTarget(targeted){
@@ -85,10 +112,10 @@ class App extends Component {
   }
 }
   clickSquare(e){
-    //first click
     if(this.turn === "player"){
+      //first click,
       if(!this.firstClick){
-        //find all the possible moves
+        //find all the possible moves, just the coordinates
         this.possibleMoves = returnSquare(this.chess.moves({square: e.target.id}), e.target.id);
         //if the piece can move
         if(this.possibleMoves.length > 0){
@@ -104,17 +131,28 @@ class App extends Component {
         let location = e.target.id;
         for(let i=0; i < this.possibleMoves.length; i++){
           if(location === this.possibleMoves[i].substr(this.possibleMoves[i].length -2)){
-            this.chess.move({from: this.state.target, to: location});
+            this.chess.move({from: this.state.target, to: location, promotion: 'q'});
             this.turn = 'computer';
           }
         }
-
+        //reset possible move squares and target to unhighlights squares
         this.possibleMoves =[];
         this.firstClick = false;
         this.setState({fen: this.chess.fen(), target:""})
 
 
       }
+    }
+  }
+  computerMove(){
+    if(!this.chess.in_checkmate() && !this.chess.in_stalemate()){
+      setTimeout(()=>{
+        let moves = this.chess.moves();
+        let random = Math.floor(Math.random() * moves.length);
+        this.chess.move(moves[random]);
+        this.turn = "player";
+        this.setState({fen: this.chess.fen()});
+      },250);
     }
   }
   render() {
