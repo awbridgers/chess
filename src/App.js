@@ -53,7 +53,7 @@ const returnSquare = (array, target) => {
 class App extends Component {
   constructor(){
     super();
-    this.state = {target: "", fen: 'rnbk1bnr/pp1P1p1p/6p1/2p5/7q/5NP1/PPP1PPBP/RNBQ1RK1 w - - 1 9', gameOver: false, gameOverMessage: ""}
+    this.state = {target: "", fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', gameOver: false, gameOverMessage: ""}
     this.chess = new Chess();
     this.clickSquare = this.clickSquare.bind(this);
     this.chooseTarget = this.chooseTarget.bind(this);
