@@ -3,19 +3,19 @@ import logo from './logo.svg';
 import './App.css';
 import Chess from 'chess.js'
 
-import blackKing from './images/blackKing.png'
-import blackQueen from './images/blackQueen.png'
-import blackRook from './images/blackRook.png'
-import blackKnight from './images/blackKnight.png'
-import blackBishop from './images/blackBishop.png'
-import blackPawn from './images/blackPawn.png'
+import blackKing from './images/blackKing2.png'
+import blackQueen from './images/blackQueen2.png'
+import blackRook from './images/blackRook2.png'
+import blackKnight from './images/blackKnight2.png'
+import blackBishop from './images/blackBishop2.png'
+import blackPawn from './images/blackPawn2.png'
 
-import whiteKing from './images/whiteKing.png'
-import whiteQueen from './images/whiteQueen.png'
-import whiteRook from './images/whiteRook.png'
-import whiteKnight from './images/whiteKnight.png'
-import whiteBishop from './images/whiteBishop.png'
-import whitePawn from './images/whitePawn.png'
+import whiteKing from './images/whiteKing2.png'
+import whiteQueen from './images/whiteQueen2.png'
+import whiteRook from './images/whiteRook2.png'
+import whiteKnight from './images/whiteKnight2.png'
+import whiteBishop from './images/whiteBishop2.png'
+import whitePawn from './images/whitePawn2.png'
 
 export default class Board extends Component{
   constructor(){
@@ -36,18 +36,21 @@ export default class Board extends Component{
   }
   returnPiece(char){
     let image = null;
-    if(char === 'k'){image = blackKing; return {backgroundImage:"url(" + image + ")", backgroundSize: "47px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'q'){image = blackQueen; return {backgroundImage:"url(" + image + ")", backgroundSize: "50px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'r'){image = blackRook; return {backgroundImage:"url(" + image + ")", backgroundSize: "40px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'n'){image = blackKnight; return {backgroundImage:"url(" + image + ")", backgroundSize: "48px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'b'){image = blackBishop; return {backgroundImage:"url(" + image + ")", backgroundSize: "45px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'p'){image = blackPawn; return {backgroundImage:"url(" + image + ")", backgroundSize: "38px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'K'){image = whiteKing; return {backgroundImage:"url(" + image + ")", backgroundSize: "47px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'Q'){image = whiteQueen; return {backgroundImage:"url(" + image + ")", backgroundSize: "50px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'R'){image = whiteRook; return {backgroundImage:"url(" + image + ")", backgroundSize: "40px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'N'){image = whiteKnight; return {backgroundImage:"url(" + image + ")", backgroundSize: "48px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'B'){image = whiteBishop; return {backgroundImage:"url(" + image + ")", backgroundSize: "45px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
-    if(char === 'P'){image = whitePawn; return {backgroundImage:"url(" + image + ")", backgroundSize: "38px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}}
+    if(char === 'k'){image = blackKing;}
+    if(char === 'q'){image = blackQueen;}
+    if(char === 'r'){image = blackRook;}
+    if(char === 'n'){image = blackKnight;}
+    if(char === 'b'){image = blackBishop;}
+    if(char === 'p'){image = blackPawn;}
+    if(char === 'K'){image = whiteKing;}
+    if(char === 'Q'){image = whiteQueen;}
+    if(char === 'R'){image = whiteRook;}
+    if(char === 'N'){image = whiteKnight;}
+    if(char === 'B'){image = whiteBishop;}
+    if(char === 'P'){image = whitePawn;}
+
+    return {backgroundImage:"url(" + image + ")", backgroundSize: "45px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}
+
 
   }
   readFEN(){
