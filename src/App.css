@@ -74,3 +74,8 @@ table tr:nth-child(odd) td:nth-child(even) {
 .normal {
 
 }
+.piece{
+  width: auto;
+  height: 45px;
+  padding-top: 10px;
+}
