@@ -1,6 +1,18 @@
+html{
+  padding:0px;
+  margin: 0px;
+  height: 100%;
+}
+body{
+  height: 100%;
+  background: black;
+  padding:0px;
+  margin: 0px;
+}
+
 .App {
   text-align: center;
-  background: black;
+  padding:0px;
 }
 
 .App-logo {
@@ -28,11 +40,14 @@
   to { transform: rotate(360deg); }
 }
 .board{
-  padding: 10px;
 
+  padding-top: 10px;
 }
-.table{
+table{
 border-collapse: collapse;
+
+
+
 
 }
 table.table, table.table tr, table.table td{
@@ -54,14 +69,6 @@ table tr:nth-child(even) td:nth-child(odd),
 table tr:nth-child(odd) td:nth-child(even) {
   background: #918151;
 }
-.dark-square{
-  background: #556B2F;
-
-}
-.light-square{
-  background: #918151;
-
-}
 
 .targeted{
   outline: 5px solid red;
@@ -78,4 +85,35 @@ table tr:nth-child(odd) td:nth-child(even) {
   width: auto;
   height: 45px;
   padding-top: 10px;
+}
+@media all and (max-device-width: 667px) and (orientation: portrait){
+
+  table{
+    border-collapse: collapse;
+  }
+  .board{
+    padding-top: 20px;
+
+  }
+  table.table td{
+    width: calc(95vw/8);
+    height: calc(95vw/8);
+
+
+  }
+}
+@media all and (max-device-width: 667px) and (orientation: landscape){
+  table{
+    border-collapse: collapse;
+  }
+  .board{
+    padding: 0px
+  }
+
+  table.table td{
+    width: calc(95vh/8);
+    height: calc(95vh/8);
+    text-align: center;
+
+  }
 }

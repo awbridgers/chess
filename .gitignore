@@ -8,6 +8,7 @@
 
 # production
 /build
+/public/icos
 
 # misc
 .DS_Store

@@ -48,8 +48,8 @@ export default class Board extends Component{
     if(char === 'N'){image = whiteKnight;}
     if(char === 'B'){image = whiteBishop;}
     if(char === 'P'){image = whitePawn;}
-
-    return {backgroundImage:"url(" + image + ")", backgroundSize: "45px", backgroundRepeat: "no-repeat", backgroundPosition: "center"}
+    let random = Math.random();
+    return {backgroundImage:"url(" + image + ")", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "80%"}
 
 
   }
@@ -94,7 +94,7 @@ export default class Board extends Component{
         <table className = 'table'>
           <tbody>
             <tr>
-              <td id = 'a8' onClick = {this.props.onClick} style = {this.returnPiece(this.state.pieceArray[0])}></td>
+              <td id = 'a8' className = {this.props.chooseClass('a8')} onClick = {this.props.onClick} style = {this.returnPiece(this.state.pieceArray[0])}></td>
               <td id = 'b8' className = {this.props.chooseClass('b8')} onClick = {this.props.onClick} style = {this.returnPiece(this.state.pieceArray[1])}></td>
               <td id = 'c8' className = {this.props.chooseClass('c8')} onClick = {this.props.onClick} style = {this.returnPiece(this.state.pieceArray[2])}></td>
               <td id = 'd8' className = {this.props.chooseClass('d8')} onClick = {this.props.onClick} style = {this.returnPiece(this.state.pieceArray[3])}></td>

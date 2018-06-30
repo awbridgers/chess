@@ -157,7 +157,7 @@ class App extends Component {
   }
   render() {
     return (
-      <div className = 'App'>
+      <div>
         <Board onClick = {this.clickSquare} chooseClass = {this.chooseTarget} fen = {this.state.fen}/>
       </div>
 
