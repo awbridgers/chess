@@ -86,6 +86,11 @@ table tr:nth-child(odd) td:nth-child(even) {
   height: 45px;
   padding-top: 10px;
 }
+.captured{
+  height:40px;
+  width:auto;
+  margin-left:-10px;
+}
 @media all and (max-device-width: 667px) and (orientation: portrait){
 
   table{

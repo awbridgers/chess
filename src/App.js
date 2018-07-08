@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Chess from 'chess.js'
 import Board from './board.jsx'
+import Captured from './captured.jsx';
 
 //this function takes the possible moves array and strips the elements to only contain a coordinate
 const returnSquare = (array, target) => {
@@ -120,7 +120,7 @@ class App extends Component {
         //if the piece can move
         if(this.possibleMoves.length > 0){
           this.firstClick = true;
-          console.log(this.possibleMoves);
+          //console.log(this.possibleMoves);
           //set the clicked on square to state.target
           this.setState({target: e.target.id})
         }
@@ -158,6 +158,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <Captured fen = {this.state.fen}/>
         <Board onClick = {this.clickSquare} chooseClass = {this.chooseTarget} fen = {this.state.fen}/>
       </div>
 
