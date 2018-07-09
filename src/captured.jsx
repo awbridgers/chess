@@ -164,7 +164,7 @@ export default class Captured extends Component {
   render(){
     if(this.props.color === 'white'){
       return (
-        <div style = {{height: "30px",textAlign: "center", paddingTop: "5px"}}>
+        <div className = 'capturedWhiteDiv'>
           <span>
             {this.display('whitePawn')}
             {this.display('whiteKnight')}
@@ -177,7 +177,7 @@ export default class Captured extends Component {
     }
     if(this.props.color === 'black'){
       return(
-        <div style = {{height: "30px",textAlign: "center", paddingTop: "5px"}}>
+        <div className = 'capturedBlackDiv'>
           <span>
             {this.display('blackPawn')}
             {this.display('blackKnight')}
