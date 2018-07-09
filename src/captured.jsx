@@ -4,6 +4,11 @@ import whiteRook from './images/whiteRook2.png'
 import whiteKnight from './images/whiteKnight2.png'
 import whiteQueen from './images/whiteQueen2.png'
 import whiteBishop from './images/whiteBishop2.png'
+import blackPawn from './images/blackPawn2.png'
+import blackRook from './images/blackRook2.png'
+import blackKnight from './images/blackKnight2.png'
+import blackQueen from './images/blackQueen2.png'
+import blackBishop from './images/blackBishop2.png'
 
 
 export default class Captured extends Component {
@@ -11,7 +16,8 @@ export default class Captured extends Component {
     super();
     this.state = {whitePawnsCaptured:0, whiteRooksCaptured:0, whiteKnightsCaptured:0, whiteBishopsCaptured:0, whiteQueensCaptured:0,
       blackPawnsCaptured:0, blackRooksCaptured:0, blackKnightsCaptured:0, blackBishopsCaptured:0, blackQueensCaptured:0}
-      this.promotedWhitePawns = 0;
+    this.promotedWhitePawns = 0;
+    this.promotedBlackPawns = 0;
     this.captured = this.captured.bind(this);
     this.display = this.display.bind(this);
 
@@ -80,15 +86,19 @@ export default class Captured extends Component {
       }
     }
 
-    if(whiteQueens < this.promotedWhitePawns - 1){
+    //this takes care of pawn promoting to a queen causing issues
+    //if whitequeens is negative, more queens on the board than 1(original Queen) + promotedWhitePawns
+    //therefore there must have been another promotion: increase promotedPawns, remove 1 pawn and add 1 queen
+    //to balance out the loss of a pawn and addition of queen with nothing captured
+    if(whiteQueens - this.state.whiteQueensCaptured < 0){
       this.promotedWhitePawns++;
       whitePawns--;
-      //this.captured();
-
-
+      whiteQueens ++;
     }
-    if(blackQueens < 0){
-
+    if(blackQueens - this.state.blackQueensCaptured < 0){
+      this.promotedBlackPawns++;
+      blackPawns--;
+      blackQueens ++;
     }
 
     //update the state with the new number of captured pieces
@@ -124,20 +134,59 @@ export default class Captured extends Component {
           pieceArray.push(<img className = "captured" key = {i} src = {whiteQueen} alt = 'whitePawn' />)
       }
     }
+    if(piece === 'blackPawn'){
+      for(let i = 0; i < this.state.blackPawnsCaptured; i++){
+          pieceArray.push(<img className = "captured" style = {{marginBottom: "-2.5px"}} key = {i} src = {blackPawn} alt = 'blackPawn' />)
+      }
+    }
+    if(piece === 'blackKnight'){
+      for(let i = 0; i < this.state.blackKnightsCaptured; i++){
+          pieceArray.push(<img className = "captured" key = {i} src = {blackKnight} alt = 'blackPawn' />)
+      }
+    }
+    if(piece === 'blackRook'){
+      for(let i = 0; i < this.state.blackRooksCaptured; i++){
+          pieceArray.push(<img className = "captured" key = {i} src = {blackRook} alt = 'blackPawn' />)
+      }
+    }
+    if(piece === 'blackBishop'){
+      for(let i = 0; i < this.state.blackBishopsCaptured; i++){
+          pieceArray.push(<img className = "captured" key = {i} src = {blackBishop} alt = 'blackPawn' />)
+      }
+    }
+    if(piece === 'blackQueen'){
+      for(let i = 0; i < this.state.blackQueensCaptured; i++){
+          pieceArray.push(<img className = "captured" key = {i} src = {blackQueen} alt = 'blackPawn' />)
+      }
+    }
     return pieceArray;
   }
   render(){
-
-    return(
-      <div style = {{position: "absolute", paddingLeft: '20px', color: 'white'}}>
-        <span>
-          {this.display('whitePawn')}
-          {this.display('whiteKnight')}
-          {this.display('whiteBishop')}
-          {this.display('whiteRook')}
-          {this.display('whiteQueen')}
-        </span>
-        </div>
-    )
+    if(this.props.color === 'white'){
+      return (
+        <div style = {{height: "30px",textAlign: "center", paddingTop: "5px"}}>
+          <span>
+            {this.display('whitePawn')}
+            {this.display('whiteKnight')}
+            {this.display('whiteBishop')}
+            {this.display('whiteRook')}
+            {this.display('whiteQueen')}
+          </span>
+          </div>
+      )
+    }
+    if(this.props.color === 'black'){
+      return(
+        <div style = {{height: "30px",textAlign: "center", paddingTop: "5px"}}>
+          <span>
+            {this.display('blackPawn')}
+            {this.display('blackKnight')}
+            {this.display('blackBishop')}
+            {this.display('blackRook')}
+            {this.display('blackQueen')}
+          </span>
+          </div>
+      )
+    }
   }
 }

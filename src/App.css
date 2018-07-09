@@ -5,7 +5,7 @@ html{
 }
 body{
   height: 100%;
-  background: black;
+  background: #505050;
   padding:0px;
   margin: 0px;
 }
@@ -41,10 +41,11 @@ body{
 }
 .board{
 
-  padding-top: 10px;
+  padding-top: 5px;
 }
 table{
 border-collapse: collapse;
+
 
 
 
@@ -55,11 +56,13 @@ table.table, table.table tr, table.table td{
   margin: auto;
 }
 table.table td {
-  height: 70px;
-  width: 70px;
+  height: 65px;
+  width: 65px;
   text-align: center;
   font-size: 32px;
   color: white;
+
+
 }
 table tr:nth-child(odd) td:nth-child(odd),
 table tr:nth-child(even) td:nth-child(even) {
@@ -87,9 +90,9 @@ table tr:nth-child(odd) td:nth-child(even) {
   padding-top: 10px;
 }
 .captured{
-  height:40px;
+  height:100%;
   width:auto;
-  margin-left:-10px;
+  margin-left:-5px;
 }
 @media all and (max-device-width: 667px) and (orientation: portrait){
 

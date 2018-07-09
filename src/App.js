@@ -158,8 +158,9 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Captured fen = {this.state.fen}/>
+        <Captured fen = {this.state.fen} color = 'white'/>
         <Board onClick = {this.clickSquare} chooseClass = {this.chooseTarget} fen = {this.state.fen}/>
+        <Captured fen = {this.state.fen} color = 'black'/>
       </div>
 
     );
