@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Chess from 'chess.js'
 
 import blackKing from './images/blackKing2.png'
 import blackQueen from './images/blackQueen2.png'
@@ -48,7 +46,6 @@ export default class Board extends Component{
     if(char === 'N'){image = whiteKnight;}
     if(char === 'B'){image = whiteBishop;}
     if(char === 'P'){image = whitePawn;}
-    let random = Math.random();
     return {backgroundImage:"url(" + image + ")", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "80%"}
 
 
@@ -56,7 +53,7 @@ export default class Board extends Component{
   readFEN(){
     let fenArray = [];
     let piecePlacement =[];
-    console.log(this.props.fen)
+    //console.log(this.props.fen)
     let temp = "";
     //separate the FEN by row and info
     for(let i=0;  i < this.props.fen.length; i++){
