@@ -29,8 +29,6 @@ export default class Captured extends Component {
   componentDidUpdate(prevProps){
     //read in the props on update and count the pieces
     if(this.props.fen !== prevProps.fen){
-      console.log('queens' + this.state.whiteQueensCaptured);
-      console.log('promoted' + this.promotedWhitePawns)
       this.captured();
 
     }
@@ -39,13 +37,12 @@ export default class Captured extends Component {
   //basic idea is to just go through the fen and count number of pieces
   captured(){
     //set the number of pieces to the number at the start of the game
-    let whitePawns, blackPawns, whiteQueens, blackQueens, whiteRooks, whiteKnights, whiteBishops, blackRooks, blackKnights, blackBishops, wpromotedPawns;
+    let whitePawns, blackPawns, whiteQueens, blackQueens, whiteRooks, whiteKnights, whiteBishops, blackRooks, blackKnights, blackBishops;
     whitePawns = 8 - this.promotedWhitePawns
     blackPawns = 8;
     whiteQueens = 1 + this.promotedWhitePawns
     blackQueens = 1;
     whiteRooks = whiteKnights = whiteBishops = blackRooks = blackKnights = blackBishops = 2;
-    wpromotedPawns = 0;
 
 
     //subtract 1 from each piece for every piece on the board = how many captured
