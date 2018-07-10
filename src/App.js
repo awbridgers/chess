@@ -53,7 +53,7 @@ const returnSquare = (array, target) => {
 class App extends Component {
   constructor(){
     super();
-    this.state = {target: "", fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', gameOver: false, gameOverMessage: ""}
+    this.state = {target: "", fen: '3k4/8/8/8/8/8/pp1K4/8 w - - 0 1', gameOver: false, gameOverMessage: ""}
     this.chess = new Chess();
     this.clickSquare = this.clickSquare.bind(this);
     this.chooseTarget = this.chooseTarget.bind(this);
@@ -149,7 +149,13 @@ class App extends Component {
       setTimeout(()=>{
         let moves = this.chess.moves();
         let random = Math.floor(Math.random() * moves.length);
-        this.chess.move(moves[random]);
+        let computerMove = moves[random]
+        //Auto promote to Queen for the time being
+        if(computerMove.includes('=')){
+          computerMove = computerMove.replace(/N/, 'Q').replace(/B/, 'Q').replace(/R/,'Q');
+        }
+        console.log(computerMove)
+        this.chess.move(computerMove);
         this.turn = "player";
         this.setState({fen: this.chess.fen()});
       },250);
