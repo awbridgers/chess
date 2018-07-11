@@ -109,7 +109,9 @@ table tr:nth-child(odd) td:nth-child(even) {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #083CAD
+  background: #083CAD;
+  min-width: 280px;
+  text-align: center;
 }
 .choosePromotion img{
   margin: 5px;
@@ -131,8 +133,6 @@ table tr:nth-child(odd) td:nth-child(even) {
   table.table td{
     width: calc(95vw/8);
     height: calc(95vw/8);
-
-
   }
 }
 @media all and (max-device-width: 667px) and (orientation: landscape){

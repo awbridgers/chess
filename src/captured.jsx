@@ -18,6 +18,10 @@ export default class Captured extends Component {
       blackPawnsCaptured:0, blackRooksCaptured:0, blackKnightsCaptured:0, blackBishopsCaptured:0, blackQueensCaptured:0}
     this.promotedWhitePawns = 0;
     this.promotedBlackPawns = 0;
+    this.whiteQueens = 0;
+    this.whiteRooks = 0;
+    this.whiteBishops = 0;
+    this.whiteKnights = 0;
     this.captured = this.captured.bind(this);
     this.display = this.display.bind(this);
 
@@ -37,15 +41,18 @@ export default class Captured extends Component {
   //basic idea is to just go through the fen and count number of pieces
   captured(){
     //set the number of pieces to the number at the start of the game
+    //the number of pieces is the start number plus the number of pieces promoted to that piece
     let whitePawns, blackPawns, whiteQueens, blackQueens, whiteRooks, whiteKnights, whiteBishops, blackRooks, blackKnights, blackBishops;
-    whitePawns = 8 - this.promotedWhitePawns
+    whitePawns = 8 - this.promotedWhitePawns;
     blackPawns = 8;
-    whiteQueens = 1 + this.promotedWhitePawns
+    whiteQueens = 1 + this.whiteQueens;
     blackQueens = 1;
-    whiteRooks = whiteKnights = whiteBishops = blackRooks = blackKnights = blackBishops = 2;
+    whiteRooks = 2 + this.whiteRooks; whiteKnights = 2 + this.whiteKnights; whiteBishops = 2+ this.whiteBishops
+    blackRooks = blackKnights = blackBishops = 2;
 
 
-    //subtract 1 from each piece for every piece on the board = how many captured
+    //subtract 1 from each total for every piece on the board = how many captured
+    //so if there are 5 pawns on the board, 8-5=3 pawns captured
     for(let x of this.props.fen){
       if(x === 'P'){
         whitePawns--;
@@ -83,21 +90,40 @@ export default class Captured extends Component {
       }
     }
 
-    //this takes care of pawn promoting to a queen causing issues
+    //this takes care of pawn promoting causing issues
     //if whitequeens is negative, more queens on the board than 1(original Queen) + promotedWhitePawns
     //therefore there must have been another promotion: increase promotedPawns, remove 1 pawn and add 1 queen
     //to balance out the loss of a pawn and addition of queen with nothing captured
     if(whiteQueens - this.state.whiteQueensCaptured < 0){
       this.promotedWhitePawns++;
+      this.whiteQueens++;
       whitePawns--;
       whiteQueens ++;
+    }
+    if(whiteRooks - this.state.whiteRooksCaptured < 0){
+      this.promotedWhitePawns++;
+      this.whiteRooks++;
+      whitePawns--;
+      whiteRooks ++;
+    }
+    if(whiteKnights - this.state.whiteKnightsCaptured < 0){
+      this.promotedWhitePawns++;
+      this.whiteKnights++;
+      whitePawns--;
+      whiteKnights ++;
+    }
+    if(whiteBishops - this.state.whiteBishopsCaptured < 0){
+      this.promotedWhitePawns++;
+      this.whiteBishops++;
+      whitePawns--;
+      whiteBishops ++;
     }
     if(blackQueens - this.state.blackQueensCaptured < 0){
       this.promotedBlackPawns++;
       blackPawns--;
       blackQueens ++;
     }
-
+    //just repeat the above code but for rooks, bishops, and knights
     //update the state with the new number of captured pieces
     this.setState({whitePawnsCaptured:whitePawns, whiteRooksCaptured:whiteRooks, whiteKnightsCaptured:whiteKnights,
       whiteBishopsCaptured:whiteBishops, whiteQueensCaptured:whiteQueens, blackPawnsCaptured:blackPawns,blackRooksCaptured:blackRooks,

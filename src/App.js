@@ -54,8 +54,8 @@ const returnSquare = (array, target) => {
 class App extends Component {
   constructor(){
     super();
-    this.state = {target: "", fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', gameOver: false, gameOverMessage: "", choosePromo:false
-    , promoLocation: ""}
+    this.state = {target: "", fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+      gameOver: false, gameOverMessage: "", choosePromo:false, promoLocation: ""}
     this.chess = new Chess();
     this.clickSquare = this.clickSquare.bind(this);
     this.chooseTarget = this.chooseTarget.bind(this);
@@ -64,7 +64,7 @@ class App extends Component {
     this.move = this.move.bind(this);
     this.possibleMoves =[];
     this.firstClick = false;
-    this.secondClick = false;
+    this.choosing = false;
     this.turn = 'player';
     this.location = '';
 
@@ -117,7 +117,7 @@ class App extends Component {
   }
 }
   clickSquare(e){
-    if(this.turn === "player"){
+    if(this.turn === "player" && !this.choosing){
       //first click,
       if(!this.firstClick){
         //find all the possible moves, just the coordinates
@@ -144,6 +144,7 @@ class App extends Component {
             if(checker.move({from: this.state.target, to: this.location, promotion: 'q'}).flags.includes('p')){
               //set choosePromo to true and store the location of the target in a new state variable so it isn't cleared out
               this.setState({choosePromo: true, promoLocation: this.state.target});
+              this.choosing = true;
               break;  //jump out of for loop because it has 1 possible move for each of promotion options
             }
             //if there is no promotion, just move the piece with promo: 'q' since it won't do anything
@@ -155,7 +156,7 @@ class App extends Component {
         //reset possible move squares and target to unhighlights squares
         this.possibleMoves =[];
         this.firstClick = false;
-        this.setState({fen: this.chess.fen(), target:""})
+        this.setState({target:""})
 
 
 
@@ -167,6 +168,7 @@ class App extends Component {
     this.chess.move({from: target, to:location, promotion:promo});
     this.turn = 'computer';
     this.setState({fen: this.chess.fen(), target:"", promoLocation:'', choosePromo: false})
+
 
   }
   computerMove(){
@@ -190,22 +192,18 @@ class App extends Component {
     //get the promotion and move the piece
     let choice = e.target.id;
     this.move(this.state.promoLocation,this.location, choice)
+    //set choosing to false so the user can click on pieces again
+    this.choosing = false;
 
   }
   render() {
+    let promo;
     if(this.state.choosePromo){
-      return (
-        <div>
-          <Promote onClick = {this.promote}/>
-          <Captured fen = {this.state.fen} color = 'white'/>
-          <Board onClick = {this.clickSquare} chooseClass = {this.chooseTarget} fen = {this.state.fen}/>
-          <Captured fen = {this.state.fen} color = 'black'/>
-        </div>
-
-      );
+      promo = <Promote onClick = {this.promote}/>
     }
     return (
       <div>
+        {promo}
         <Captured fen = {this.state.fen} color = 'white'/>
         <Board onClick = {this.clickSquare} chooseClass = {this.chooseTarget} fen = {this.state.fen}/>
         <Captured fen = {this.state.fen} color = 'black'/>
