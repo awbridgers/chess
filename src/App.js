@@ -3,6 +3,7 @@ import './App.css';
 import Chess from 'chess.js'
 import Board from './board.jsx'
 import Captured from './captured.jsx';
+import Promote from './promote.jsx'
 
 //this function takes the possible moves array and strips the elements to only contain a coordinate
 const returnSquare = (array, target) => {
@@ -53,15 +54,19 @@ const returnSquare = (array, target) => {
 class App extends Component {
   constructor(){
     super();
-    this.state = {target: "", fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', gameOver: false, gameOverMessage: ""}
+    this.state = {target: "", fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', gameOver: false, gameOverMessage: "", choosePromo:false
+    , promoLocation: ""}
     this.chess = new Chess();
     this.clickSquare = this.clickSquare.bind(this);
     this.chooseTarget = this.chooseTarget.bind(this);
     this.computerMove = this.computerMove.bind(this);
+    this.promote = this.promote.bind(this);
+    this.move = this.move.bind(this);
     this.possibleMoves =[];
     this.firstClick = false;
     this.secondClick = false;
     this.turn = 'player';
+    this.location = '';
 
 
   }
@@ -127,12 +132,24 @@ class App extends Component {
       }
         //second click
       else{
+        //setup another chess version with the same fen to check if the move causes a promotion
+        let checker = new Chess(this.state.fen)
+
         //if the click is on a possible move square, move the first click piece to second click location
-        let location = e.target.id;
+        this.location = e.target.id;
+        //cycle through the possible moves and see if the clicked square is a possible move
         for(let i=0; i < this.possibleMoves.length; i++){
-          if(location === this.possibleMoves[i].substr(this.possibleMoves[i].length -2)){
-            this.chess.move({from: this.state.target, to: location, promotion: 'q'});
-            this.turn = 'computer';
+          if(this.location === this.possibleMoves[i].substr(this.possibleMoves[i].length -2)){
+            //if the move causes a promotion, we need to get the selected promo
+            if(checker.move({from: this.state.target, to: this.location, promotion: 'q'}).flags.includes('p')){
+              //set choosePromo to true and store the location of the target in a new state variable so it isn't cleared out
+              this.setState({choosePromo: true, promoLocation: this.state.target});
+              break;  //jump out of for loop because it has 1 possible move for each of promotion options
+            }
+            //if there is no promotion, just move the piece with promo: 'q' since it won't do anything
+            else{
+              this.move(this.state.target,this.location, 'q');
+            }
           }
         }
         //reset possible move squares and target to unhighlights squares
@@ -141,8 +158,16 @@ class App extends Component {
         this.setState({fen: this.chess.fen(), target:""})
 
 
+
       }
     }
+  }
+  move(target,location,promo){
+    //move the chess piece, change turn, and set new state for fen, clear the rest.
+    this.chess.move({from: target, to:location, promotion:promo});
+    this.turn = 'computer';
+    this.setState({fen: this.chess.fen(), target:"", promoLocation:'', choosePromo: false})
+
   }
   computerMove(){
     if(!this.chess.in_checkmate() && !this.chess.in_stalemate()){
@@ -154,14 +179,31 @@ class App extends Component {
         if(computerMove.includes('=')){
           computerMove = computerMove.replace(/N/, 'Q').replace(/B/, 'Q').replace(/R/,'Q');
         }
-        console.log(computerMove)
         this.chess.move(computerMove);
         this.turn = "player";
         this.setState({fen: this.chess.fen()});
       },250);
     }
   }
+
+  promote(e){
+    //get the promotion and move the piece
+    let choice = e.target.id;
+    this.move(this.state.promoLocation,this.location, choice)
+
+  }
   render() {
+    if(this.state.choosePromo){
+      return (
+        <div>
+          <Promote onClick = {this.promote}/>
+          <Captured fen = {this.state.fen} color = 'white'/>
+          <Board onClick = {this.clickSquare} chooseClass = {this.chooseTarget} fen = {this.state.fen}/>
+          <Captured fen = {this.state.fen} color = 'black'/>
+        </div>
+
+      );
+    }
     return (
       <div>
         <Captured fen = {this.state.fen} color = 'white'/>

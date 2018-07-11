@@ -99,12 +99,26 @@ table tr:nth-child(odd) td:nth-child(even) {
     text-align: center;
     padding-top: 5px
   }
-  .capturedBlackDiv{
-      height: 30px;
-      text-align: center;
-      padding-top: 5px
-    }
-
+.capturedBlackDiv{
+    height: 30px;
+    text-align: center;
+    padding-top: 5px
+  }
+.choosePromotion{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #083CAD
+}
+.choosePromotion img{
+  margin: 5px;
+  padding:5px;
+  background: grey;
+}
+.choosePromotion img:hover{
+  background: yellow;
+}
 @media all and (max-device-width: 667px) and (orientation: portrait){
 
   table{
