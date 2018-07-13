@@ -44,7 +44,7 @@ class App extends Component {
     super();
     this.state = {
       target: '',
-      fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+      fen: '7k/6pp/8/6N1/1r6/2q5/8/5K2 w - - 0 1',
       gameOver: false,
       gameOverMessage: '',
       choosePromo:false,
@@ -156,20 +156,18 @@ class App extends Component {
       to:location,
       promotion:promo,
     });
-    this.turn = 'computer';
     this.setState({
       fen: this.chess.fen(),
       target:'',
       promoLocation:'',
       choosePromo: false,
-    });
+    })
+    this.turn = 'computer';
   }
 
   evaluateScore = (fen) => {
     let game = new Chess(fen);
-    if (game.in_checkmate()) {
-      return 10000;
-    }
+
 
     let score = 0;
 
@@ -181,54 +179,54 @@ class App extends Component {
     for (let pieceCode of boardPieceCodes) {
       switch (pieceCode) {
         case ('Q'): {
-          score -= 9;
-          break;
-        }
-
-        case ('R'): {
-          score -= 5;
-          break;
-        };
-
-        case ('N'): {
-          score -= 3;
-          break;
-        };
-
-        case ('B'): {
-          score -= 3;
-          break;
-        };
-
-        case ('P'): {
-          score --;
-          break;
-        };
-
-        case ('q'): {
           score += 9;
           break;
         }
 
-        case ('r'): {
+        case ('R'): {
           score += 5;
           break;
-        };
+        }
 
-        case ('n'): {
+        case ('N'): {
           score += 3;
           break;
-        };
+        }
 
-        case ('b'): {
+        case ('B'): {
           score += 3;
           break;
-        };
+        }
 
-        case ('p'): {
+        case ('P'): {
           score ++;
           break;
-        };
+        }
+
+        case ('q'): {
+          score -= 9;
+          break;
+        }
+
+        case ('r'): {
+          score -= 5;
+          break;
+        }
+
+        case ('n'): {
+          score -= 3;
+          break;
+        }
+
+        case ('b'): {
+          score -= 3;
+          break;
+        }
+
+        case ('p'): {
+          score --;
+          break;
+        }
 
         default: {
           break;
@@ -239,20 +237,21 @@ class App extends Component {
   }
 
   calculateBestMove = () => {
+    this.positions = 0;
     // get all the moves
     let possibleMoves = this.chess.moves();
     // keep a list of all equally best moves to choose from
     let bestMoves = [];
-    let bestValue = -100;
-    // calc current score
+    let bestValue = 9999;
+    // use negative because black winning is a negative score
     let currentScore = this.evaluateScore(this.state.fen);
     // for each possible move, make the move and calculate the score
     possibleMoves.forEach((move) => {
       this.chess.move(move);
-      let value = this.evaluateScore(this.chess.fen());
+      let value = this.findBestMove(1, true) ;
       this.chess.undo();
       // if the value of the move is better than or equal the current best move, update
-      if (value > bestValue) {
+      if (value < bestValue) {
         bestValue = value;
         bestMoves = [move];
       } else if (value === bestValue) {
@@ -267,12 +266,42 @@ class App extends Component {
     // if no best moves, pick a random move
     return possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
   }
-
+  findBestMove = (depth, whiteToMove) => {
+    this.positions++;
+    if(depth === 0){
+      console.log('Going')
+      return this.evaluateScore(this.chess.fen());
+    }
+    let possibleMoves = this.chess.moves();
+    if(whiteToMove){
+      let bestMove = -5000
+      possibleMoves.forEach((move)=>{
+        this.chess.move(move);
+        if(this.chess.in_checkmate()){
+          bestMove = 100000
+        }
+        bestMove = Math.max(bestMove, this.findBestMove(depth - 1, !whiteToMove));
+        this.chess.undo();
+      });
+      return bestMove;
+    }
+    else{
+      let bestMove = 5000
+      possibleMoves.forEach((move)=>{
+        this.chess.move(move);
+        if(this.chess.in_checkmate()){
+          bestMove = -100000
+        }
+        //the best move for white is the one that evals to the biggest negative
+        bestMove = Math.min(bestMove, this.findBestMove(depth - 1, !whiteToMove));
+        this.chess.undo();
+      });
+      return bestMove;
+    }
+  }
   computerMove = () => {
     if (!this.chess.in_checkmate() && !this.chess.in_stalemate()) {
       setTimeout(() => {
-        let moves = this.chess.moves();
-        //let random = Math.floor(Math.random() * moves.length);
         let computerMove = this.calculateBestMove();
         //Auto promote to Queen for the time being
         if (computerMove.includes('=')) {
@@ -294,6 +323,7 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.positions)
     const {
       choosePromo,
       fen,

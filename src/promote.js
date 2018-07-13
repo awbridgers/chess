@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import whiteQueen from './images/whiteQueen2.png';
 import whiteRook from './images/whiteRook2.png';
 import whiteKnight from './images/whiteKnight2.png';
