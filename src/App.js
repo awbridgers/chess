@@ -261,7 +261,11 @@ class App extends Component {
     });
 
     // pick a random move from the set of best moves (stops comp from making first move every time)
-    return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+    if (bestMoves.length) {
+      return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+    }
+    // if no best moves, pick a random move
+    return possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
   }
 
   computerMove = () => {
