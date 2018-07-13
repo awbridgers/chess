@@ -78,7 +78,7 @@ class App extends Component {
         // if the player just moved, the comp must be in checkmate
         this.setState({
           gameOver: true,
-          gameOverMessage: `'Checkmate! You ${this.turn === 'computer' ? 'Win' : 'Lose'}.`,
+          gameOverMessage: `Checkmate! You ${this.turn === 'computer' ? 'Win' : 'Lose'}.`,
         });
       } else if (this.chess.in_stalemate()) {
         this.setState({
