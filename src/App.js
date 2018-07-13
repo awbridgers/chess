@@ -62,11 +62,14 @@ class App extends Component {
     this.computerMove = this.computerMove.bind(this);
     this.promote = this.promote.bind(this);
     this.move = this.move.bind(this);
+    this.calculateBestMove = this.calculateBestMove.bind(this);
+    this.evaluateScore = this.evaluateScore.bind(this);
     this.possibleMoves =[];
     this.firstClick = false;
     this.choosing = false;
     this.turn = 'player';
     this.location = '';
+
 
 
   }
@@ -83,14 +86,14 @@ class App extends Component {
       if(this.chess.in_checkmate()){
         //if the player just moved, the comp must be in checkmate
         if(this.turn === 'computer'){
-          this.setState({gameOver: true, gameOverMessage: "Checkmate! You Win"})
+          this.setState({gameOver: true, gameOverMessage: "Checkmate! You Win."})
         }
         else{
-            this.setState({gameOver: true, gameOverMessage: "Checkmate! You Lose"})
+            this.setState({gameOver: true, gameOverMessage: "Checkmate! You Lose."})
         }
       }
       if(this.chess.in_stalemate()){
-        alert("Stalemate! Game is a draw!")
+        this.setState({gameOver: true, gameOverMessage: "Stalemate! Game is a draw."})
       }
 
       if(this.turn === 'computer'){
@@ -168,6 +171,59 @@ class App extends Component {
     this.chess.move({from: target, to:location, promotion:promo});
     this.turn = 'computer';
     this.setState({fen: this.chess.fen(), target:"", promoLocation:'', choosePromo: false})
+  }
+  evaluateScore(fen){
+    //just count up the pieces and multiple by point value;
+    let whitePawns, blackPawns, whiteQueens, blackQueens, whiteRooks, whiteKnights,
+    whiteBishops, blackRooks, blackKnights, blackBishops;
+
+    whitePawns = blackPawns = whiteQueens = blackQueens = whiteRooks = whiteKnights =
+    whiteBishops = blackRooks = blackKnights = blackBishops = 0;
+    let game = new Chess(fen);
+    if(game.in_checkmate()){
+      return -10000;
+    }
+
+    for(let x of fen){
+      if(x === 'Q'){whiteQueens ++;}
+      if(x === 'R'){whiteRooks ++;}
+      if(x === 'N'){whiteKnights ++;}
+      if(x === 'B'){whiteBishops ++;}
+      if(x === 'P'){whitePawns ++;}
+      if(x === 'q'){blackQueens ++;}
+      if(x === 'r'){blackRooks ++;}
+      if(x === 'n'){blackKnights ++;}
+      if(x === 'b'){blackBishops ++;}
+      if(x === 'p'){blackPawns ++;}
+      if(x === ' '){break;}
+    }
+    return (((whiteQueens * 9)+(whiteRooks * 5)+(whiteKnights * 3)+ (whiteBishops * 3)+(whitePawns)) -
+    ((blackQueens * 9)+(blackRooks * 5) + (blackKnights * 3)+(blackBishops * 3)+(blackPawns)))
+
+  }
+  calculateBestMove(){
+    //get all the moves
+    let possibleMoves = this.chess.moves();
+    let bestMove = null;
+    let bestValue = -100;
+    //calc current score
+    let currentScore = -this.evaluateScore(this.state.fen)
+    //for each possible move, make the move and calculate the score
+    possibleMoves.forEach((move)=>{
+      this.chess.move(move);
+      let value = -this.evaluateScore(this.chess.fen());
+      this.chess.undo()
+      //if the value of the move is better than the current best move, update
+      if(value > bestValue){
+        bestValue = value;
+        bestMove = move;
+      }
+    })
+    //if the best value is the current score, make a random move for now (stops comp from making first move every time)
+    if(bestValue === currentScore){
+      return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
+    }
+    return bestMove;
 
 
   }
@@ -175,8 +231,8 @@ class App extends Component {
     if(!this.chess.in_checkmate() && !this.chess.in_stalemate()){
       setTimeout(()=>{
         let moves = this.chess.moves();
-        let random = Math.floor(Math.random() * moves.length);
-        let computerMove = moves[random]
+        //let random = Math.floor(Math.random() * moves.length);
+        let computerMove = this.calculateBestMove();
         //Auto promote to Queen for the time being
         if(computerMove.includes('=')){
           computerMove = computerMove.replace(/N/, 'Q').replace(/B/, 'Q').replace(/R/,'Q');
