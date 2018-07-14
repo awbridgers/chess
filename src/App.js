@@ -167,7 +167,9 @@ class App extends Component {
 
   evaluateScore = (fen) => {
     let game = new Chess(fen);
-
+    if (game.in_checkmate()) {
+      return this.chess.turn() === 'b' ? 10000 : -10000
+    }
 
     let score = 0;
 
@@ -237,6 +239,7 @@ class App extends Component {
   }
 
   calculateBestMove = () => {
+    //keep track of the number of positions
     this.positions = 0;
     // get all the moves
     let possibleMoves = this.chess.moves();
@@ -248,7 +251,7 @@ class App extends Component {
     // for each possible move, make the move and calculate the score
     possibleMoves.forEach((move) => {
       this.chess.move(move);
-      let value = this.findBestMove(1, true) ;
+      let value = this.findBestMove(2, true) ;
       this.chess.undo();
       // if the value of the move is better than or equal the current best move, update
       if (value < bestValue) {
