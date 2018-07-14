@@ -239,6 +239,7 @@ class App extends Component {
   }
 
   calculateBestMove = () => {
+    //keep track of the number of position
     this.positions = 0;
     // get all the moves
     let possibleMoves = this.chess.moves();
