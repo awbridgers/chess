@@ -1,9 +1,15 @@
+
 import React, { Component } from 'react';
 import './App.css';
 import Chess from 'chess.js'
 import Board from './board.js'
 import Captured from './captured.js';
-import Promote from './promote.js'
+import Promote from './promote.js';
+
+
+import 'isomorphic-fetch'
+require('es6-promise').polyfill()
+
 
 // this function takes the possible moves array and strips the elements to only contain a coordinate
 const returnSquare = (array, target) => {
@@ -62,6 +68,7 @@ class App extends Component {
   componentDidMount() {
     // load in the starting position from state
     this.chess.load(this.state.fen);
+
   }
 
   componentDidUpdate() {
@@ -156,133 +163,35 @@ class App extends Component {
       to:location,
       promotion:promo,
     });
-    this.turn = 'computer';
     this.setState({
       fen: this.chess.fen(),
       target:'',
       promoLocation:'',
       choosePromo: false,
-    });
-  }
-
-  evaluateScore = (fen) => {
-    let game = new Chess(fen);
-    if (game.in_checkmate()) {
-      return 10000;
-    }
-
-    let score = 0;
-
-    // the fen might have an extra 'b' for black after the list of codes, e.g.
-    // rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1, so we strip out only the codes to count
-    const boardPieceCodes = fen.split(' ')[0];
-
-    // just loop through all the pieces and update the point value;
-    for (let pieceCode of boardPieceCodes) {
-      switch (pieceCode) {
-        case ('Q'): {
-          score -= 9;
-          break;
-        }
-
-        case ('R'): {
-          score -= 5;
-          break;
-        };
-
-        case ('N'): {
-          score -= 3;
-          break;
-        };
-
-        case ('B'): {
-          score -= 3;
-          break;
-        };
-
-        case ('P'): {
-          score --;
-          break;
-        };
-
-        case ('q'): {
-          score += 9;
-          break;
-        }
-
-        case ('r'): {
-          score += 5;
-          break;
-        };
-
-        case ('n'): {
-          score += 3;
-          break;
-        };
-
-        case ('b'): {
-          score += 3;
-          break;
-        };
-
-        case ('p'): {
-          score ++;
-          break;
-        };
-
-        default: {
-          break;
-        }
-      };
-    }
-    return score;
-  }
-
-  calculateBestMove = () => {
-    // get all the moves
-    let possibleMoves = this.chess.moves();
-    // keep a list of all equally best moves to choose from
-    let bestMoves = [];
-    let bestValue = -100;
-    // calc current score
-    let currentScore = this.evaluateScore(this.state.fen);
-    // for each possible move, make the move and calculate the score
-    possibleMoves.forEach((move) => {
-      this.chess.move(move);
-      let value = this.evaluateScore(this.chess.fen());
-      this.chess.undo();
-      // if the value of the move is better than or equal the current best move, update
-      if (value > bestValue) {
-        bestValue = value;
-        bestMoves = [move];
-      } else if (value === bestValue) {
-        bestMoves.push(move);
-      }
-    });
-
-    // pick a random move from the set of best moves (stops comp from making first move every time)
-    if (bestMoves.length) {
-      return bestMoves[Math.floor(Math.random() * bestMoves.length)];
-    }
-    // if no best moves, pick a random move
-    return possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+    })
+    this.turn = 'computer';
   }
 
   computerMove = () => {
     if (!this.chess.in_checkmate() && !this.chess.in_stalemate()) {
-      setTimeout(() => {
-        let moves = this.chess.moves();
-        //let random = Math.floor(Math.random() * moves.length);
-        let computerMove = this.calculateBestMove();
-        //Auto promote to Queen for the time being
-        if (computerMove.includes('=')) {
-          computerMove = computerMove.replace(/N/, 'Q').replace(/B/, 'Q').replace(/R/,'Q');
-        }
-        this.chess.move(computerMove);
-        this.turn = 'player';
-        this.setState({fen: this.chess.fen()});
-      },250);
-    }
+
+      //format url for fetch
+      let fen = this.state.fen;
+      fen = fen.replace(/\//g, '%2F').replace(/ /g, '+');
+      let url = 'http://api.underwaterchess.com/game?fen=' + fen + '&move=&format=json';
+
+      //fetch url
+      fetch(url,{method: 'get', mode: 'cors'}).then(res => res.json()).then((data) =>{
+          let move = data.turn.bestMove;
+          setTimeout(() => {
+            this.chess.move(move, {sloppy:true})
+            this.turn = 'player';
+            this.setState({fen: this.chess.fen()});
+          },250);
+        })
+      }
+
+
   }
 
   promote = (e) => {
