@@ -6,9 +6,10 @@ import Board from './board.js'
 import Captured from './captured.js';
 import Promote from './promote.js';
 
-
-import 'isomorphic-fetch'
-require('es6-promise').polyfill()
+//import stockfish.js as a worker so it can run in the background per the instructions in the readme.
+//used https://medium.com/@danilog1905/how-to-use-web-workers-with-react-create-app-and-not-ejecting-in-the-attempt-3718d2a1166b
+//to format the app to run a worker.
+import myWorker from './stockfish.worker';
 
 
 // this function takes the possible moves array and strips the elements to only contain a coordinate
@@ -55,6 +56,7 @@ class App extends Component {
       gameOverMessage: '',
       choosePromo:false,
       promoLocation: '',
+      difficulty: '10'
     };
 
     this.chess = new Chess();
@@ -66,10 +68,25 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // load in the starting position from state
     this.chess.load(this.state.fen);
+    this.worker = new myWorker();
+    //add the event listener for the stockfish web worker
+    this.worker.addEventListener('message', event => {
+      if(this.turn === 'computer'){
+        let engineString = event.data;
+        if (engineString.includes('bestmove')){
+          let bestMove = engineString.substr(9,5);
+          //if the last character is a space, cut it off. If not, its a promotion and we need it.
+          bestMove = (bestMove[5]===' ')? bestMove.slice(0,-1) : bestMove;
+          this.chess.move(bestMove, {sloppy: true});
+          this.setState({fen: this.chess.fen()});
+          this.turn = 'player';
+        }
+      }
 
-  }
+    });
+}
+
 
   componentDidUpdate() {
     if (this.state.gameOver) {
@@ -173,25 +190,14 @@ class App extends Component {
   }
 
   computerMove = () => {
-    if (!this.chess.in_checkmate() && !this.chess.in_stalemate()) {
-
-      //format url for fetch
-      let fen = this.state.fen;
-      fen = fen.replace(/\//g, '%2F').replace(/ /g, '+');
-      let url = 'http://api.underwaterchess.com/game?fen=' + fen + '&move=&format=json';
-
-      //fetch url
-      fetch(url,{method: 'get', mode: 'cors'}).then(res => res.json()).then((data) =>{
-          let move = data.turn.bestMove;
-          setTimeout(() => {
-            this.chess.move(move, {sloppy:true})
-            this.turn = 'player';
-            this.setState({fen: this.chess.fen()});
-          },250);
-        })
-      }
-
-
+    if (!this.chess.game_over()) {
+      //setTimeout so the moves don't happen so quickly
+      setTimeout(()=>{
+        //uci messages for the stockfish js worker.
+        this.worker.postMessage('position fen ' + this.state.fen)
+        this.worker.postMessage('go depth ' + this.state.difficulty)
+      },250);
+    }
   }
 
   promote = (e) => {

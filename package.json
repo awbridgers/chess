@@ -10,14 +10,17 @@
     "gh-pages": "^1.2.0",
     "isomorphic-fetch": "^2.2.1",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "stockfish": "^8.0.0"
   },
   "devDependencies": {
-    "react-scripts": "1.1.4"
+    "react-app-rewired": "^1.5.2",
+    "react-scripts": "1.1.4",
+    "worker-loader": "^2.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test --env=jsdom",
