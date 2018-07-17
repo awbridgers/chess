@@ -12,6 +12,7 @@ import Promote from './promote.js';
 import myWorker from './stockfish.worker';
 
 
+
 // this function takes the possible moves array and strips the elements to only contain a coordinate
 const returnSquare = (array, target) => {
   let returnArray = [];
@@ -56,14 +57,14 @@ class App extends Component {
       gameOverMessage: '',
       choosePromo:false,
       promoLocation: '',
-      difficulty: '10'
+      difficulty: '10',
+      turn: 'player'
     };
 
     this.chess = new Chess();
     this.possibleMoves = [];
     this.hasMadeFirstClick = false;
     this.choosing = false;
-    this.turn = 'player';
     this.location = '';
   }
 
@@ -72,19 +73,19 @@ class App extends Component {
     this.worker = new myWorker();
     //add the event listener for the stockfish web worker
     this.worker.addEventListener('message', event => {
-      if(this.turn === 'computer'){
+      if(this.state.turn === 'computer'){
+        console.log(event.data)
         let engineString = event.data;
         if (engineString.includes('bestmove')){
           let bestMove = engineString.substr(9,5);
           //if the last character is a space, cut it off. If not, its a promotion and we need it.
           bestMove = (bestMove[5]===' ')? bestMove.slice(0,-1) : bestMove;
           this.chess.move(bestMove, {sloppy: true});
-          this.setState({fen: this.chess.fen()});
-          this.turn = 'player';
+          this.setState({fen: this.chess.fen(), turn: 'player'});
         }
       }
-
     });
+    this.worker.postMessage('ucinewgame position fen ' + this.state.fen + ' go');
 }
 
 
@@ -102,14 +103,14 @@ class App extends Component {
         // if the player just moved, the comp must be in checkmate
         this.setState({
           gameOver: true,
-          gameOverMessage: `Checkmate! You ${this.turn === 'computer' ? 'Win' : 'Lose'}.`,
+          gameOverMessage: `Checkmate! You ${this.state.turn === 'computer' ? 'Win' : 'Lose'}.`,
         });
       } else if (this.chess.in_stalemate()) {
         this.setState({
           gameOver: true,
           gameOverMessage: 'Stalemate! Game is a draw.',
         });
-      } else if (this.turn === 'computer') {
+      } else if (this.state.turn === 'computer') {
         this.computerMove();
       }
     }
@@ -132,7 +133,7 @@ class App extends Component {
   return 'normal';
 }
   clickSquare = (e) => {
-    if (this.turn === 'player' && !this.choosing) {
+    if (this.state.turn === 'player' && !this.choosing) {
       if (!this.hasMadeFirstClick) { // first click
         // find all the possible moves, just the coordinates
         this.possibleMoves = returnSquare(this.chess.moves({square: e.target.id}), e.target.id);
@@ -185,15 +186,15 @@ class App extends Component {
       target:'',
       promoLocation:'',
       choosePromo: false,
+      turn: 'computer'
     })
-    this.turn = 'computer';
   }
 
   computerMove = () => {
     if (!this.chess.game_over()) {
       //setTimeout so the moves don't happen so quickly
       setTimeout(()=>{
-        //uci messages for the stockfish js worker.
+        //uci messages for the stockfish js worker
         this.worker.postMessage('position fen ' + this.state.fen)
         this.worker.postMessage('go depth ' + this.state.difficulty)
       },250);
