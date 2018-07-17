@@ -1,5 +1,6 @@
 # Chess
-Game is live at https://awbridgers.github.io/chess/
+Game is live at https://awbridgers.github.io/chess/.
+
 This project was made using [Create React App](https://github.com/facebookincubator/create-react-app).
 A simple chess game using the [Stockfish.js](https://github.com/nmrugg/stockfish.js) for computer moves.
 # Future Updates
