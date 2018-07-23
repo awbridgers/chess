@@ -66,11 +66,12 @@ table.table td {
 }
 table tr:nth-child(odd) td:nth-child(odd),
 table tr:nth-child(even) td:nth-child(even) {
-  background: #556B2F;
+  background: #918151;
 }
 table tr:nth-child(even) td:nth-child(odd),
 table tr:nth-child(odd) td:nth-child(even) {
-  background: #918151;
+
+  background: #556B2F;
 }
 
 .targeted{
