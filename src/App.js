@@ -223,7 +223,10 @@ class App extends Component {
         <Captured fen={fen} color ="white"/>
         <Board onClick={this.clickSquare} chooseClass={this.chooseTarget} fen={fen}/>
         <Captured fen={fen} color="black"/>
+        <div className = 'controller'>
+        </div>
       </div>
+
     );
   }
 }

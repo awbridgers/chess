@@ -122,6 +122,14 @@ table tr:nth-child(odd) td:nth-child(even) {
 .choosePromotion img:hover{
   background: yellow;
 }
+.controller{
+  position: absolute;
+  top: 40px;
+  right: 200px;
+  height: 200px;
+  width:200px;
+  background: blue;
+}
 @media all and (max-device-width: 667px) and (orientation: portrait){
 
   table{
