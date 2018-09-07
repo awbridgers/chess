@@ -1,10 +1,10 @@
-
 import React, { Component } from 'react';
 import './App.css';
 import Chess from 'chess.js'
 import Board from './board.js'
 import Captured from './captured.js';
 import Promote from './promote.js';
+import Controller from './controller.js';
 
 //import stockfish.js as a worker so it can run in the background per the instructions in the readme.
 //used https://medium.com/@danilog1905/how-to-use-web-workers-with-react-create-app-and-not-ejecting-in-the-attempt-3718d2a1166b
@@ -58,7 +58,8 @@ class App extends Component {
       choosePromo:false,
       promoLocation: '',
       difficulty: '10',
-      turn: 'player'
+      turn: 'player',
+      history: ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1']
     };
 
     this.chess = new Chess();
@@ -73,15 +74,24 @@ class App extends Component {
     this.worker = new myWorker();
     //add the event listener for the stockfish web worker
     this.worker.addEventListener('message', event => {
+      if(this.state.turn === 'player'){
+        //must be a hint
+        let engineString = event.data;
+        if(engineString.includes('bestmove')){
+          let bestMove = engineString.substr(9,4);
+          this.possibleMoves = [bestMove.substr(2,2)]
+          this.setState({target: bestMove.substr(0,2)})
+        }
+      }
       if(this.state.turn === 'computer'){
-        console.log(event.data)
+        //console.log(event.data)
         let engineString = event.data;
         if (engineString.includes('bestmove')){
           let bestMove = engineString.substr(9,5);
           //if the last character is a space, cut it off. If not, its a promotion and we need it.
           bestMove = (bestMove[5]===' ')? bestMove.slice(0,-1) : bestMove;
           this.chess.move(bestMove, {sloppy: true});
-          this.setState({fen: this.chess.fen(), turn: 'player'});
+          this.setState({fen: this.chess.fen(), turn: 'player', history: [...this.state.history,this.chess.fen()]});
         }
       }
     });
@@ -186,7 +196,8 @@ class App extends Component {
       target:'',
       promoLocation:'',
       choosePromo: false,
-      turn: 'computer'
+      turn: 'computer',
+      history: [...this.state.history, this.chess.fen()]
     })
   }
 
@@ -209,6 +220,45 @@ class App extends Component {
     this.choosing = false;
   }
 
+  undo = () =>{
+    //allow undo until the only fen remaining is starting position
+    if(this.state.history.length > 2 && !this.state.gameOver){
+      // the player has just moved, realized the move is bad and wants to undo
+       if(this.state.turn === 'player'){
+        let history = this.state.history;
+        //remove the last history element which is computers move, and then the last player move
+        history.pop();
+        history.pop();
+        let previousFEN = this.state.history[this.state.history.length-1]
+        console.log(previousFEN);
+        this.possibleMoves = [];
+        this.hasMadeFirstClick = false;
+        this.chess.load(previousFEN);
+        this.setState({fen: previousFEN, history: history, target:''})
+      }
+    }
+  }
+
+  hint = () => {
+    if(this.state.turn === 'player'){
+      this.worker.postMessage('position fen ' + this.state.fen)
+      this.worker.postMessage('go depth ' + this.state.difficulty)
+    }
+  }
+
+  newGame = () => {
+    this.chess.load('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+    this.setState({target: '',
+      fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+      gameOver: false,
+      gameOverMessage: '',
+      choosePromo:false,
+      promoLocation: '',
+      difficulty: '10',
+      turn: 'player',
+      history: ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1']})
+  };
+
   render() {
     const {
       choosePromo,
@@ -216,15 +266,21 @@ class App extends Component {
     } = this.state;
 
     return (
-      <div>
+      <div className = 'bigDiv'>
         {choosePromo && (
           <Promote onClick={this.promote}/>
         )}
-        <Captured fen={fen} color ="white"/>
-        <Board onClick={this.clickSquare} chooseClass={this.chooseTarget} fen={fen}/>
-        <Captured fen={fen} color="black"/>
-        <div className = 'controller'>
+        <div className = 'boardDiv'>
+          <div className = 'gameBoard'>
+            <Captured fen={fen} color ="white"/>
+            <Board onClick={this.clickSquare} chooseClass={this.chooseTarget} fen={fen}/>
+            <Captured fen={fen} color="black"/>
+          </div>
+          <div className = 'controller'>
+            <Controller undo = {this.undo} hint = {this.hint} newGame = {this.newGame} />
+          </div>
         </div>
+        
       </div>
 
     );

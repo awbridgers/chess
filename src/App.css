@@ -10,45 +10,17 @@ body{
   margin: 0px;
 }
 
-.App {
-  text-align: center;
-  padding:0px;
+.bigDiv{
+  min-width: 800px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 .board{
-
   padding-top: 5px;
 }
+
 table{
 border-collapse: collapse;
-
-
-
-
+min-width: 400px;
 
 }
 table.table, table.table tr, table.table td{
@@ -61,8 +33,6 @@ table.table td {
   text-align: center;
   font-size: 32px;
   color: white;
-
-
 }
 table tr:nth-child(odd) td:nth-child(odd),
 table tr:nth-child(even) td:nth-child(even) {
@@ -122,22 +92,37 @@ table tr:nth-child(odd) td:nth-child(even) {
 .choosePromotion img:hover{
   background: yellow;
 }
-.controller{
-  position: absolute;
-  top: 40px;
-  right: 200px;
-  height: 200px;
-  width:200px;
-  background: blue;
+.boardDiv{
+  text-align: center;
+
 }
+.gameBoard{
+  display: inline-block;
+}
+.controller{
+  display: inline-block;
+  vertical-align: top;
+  padding-left: 30px;
+  margin-top: 50px;
+}
+.controller button{
+  border-radius: 8px;
+  margin-right: 5px;
+  height: 30px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
 @media all and (max-device-width: 667px) and (orientation: portrait){
 
+  .bigDiv{
+
+  }
   table{
     border-collapse: collapse;
   }
   .board{
     padding-top: 10px;
-
   }
   table.table td{
     width: calc(95vw/8);
@@ -145,6 +130,10 @@ table tr:nth-child(odd) td:nth-child(even) {
   }
 }
 @media all and (max-device-width: 667px) and (orientation: landscape){
+
+  .bigDiv{
+
+  }
   table{
     border-collapse: collapse;
   }
