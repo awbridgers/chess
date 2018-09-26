@@ -19,11 +19,16 @@ export default class Captured extends Component {
     this.promotedWhitePawns = 0;
     this.promotedBlackPawns = 0;
     this.whiteQueens = 0;
+    this.blackQueens = 0;
     this.whiteRooks = 0;
+    this.blackRooks = 0;
     this.whiteBishops = 0;
+    this.blackBishops = 0;
     this.whiteKnights = 0;
+    this.blackKnights = 0;
     this.captured = this.captured.bind(this);
     this.display = this.display.bind(this);
+    this.newGame = false;
 
   }
   componentDidMount(){
@@ -32,8 +37,23 @@ export default class Captured extends Component {
 
   componentDidUpdate(prevProps){
     //read in the props on update and count the pieces
+
     if(this.props.fen !== prevProps.fen){
+      //at the start of a game, reset all the stuff back to the original
+      //this is redundant for the first game, but fixes issue with the new game button
+      if(this.props.fen === 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'){
+        this.setState({whitePawnsCaptured:0, whiteRooksCaptured:0, whiteKnightsCaptured:0, whiteBishopsCaptured:0, whiteQueensCaptured:0,
+          blackPawnsCaptured:0, blackRooksCaptured:0, blackKnightsCaptured:0, blackBishopsCaptured:0, blackQueensCaptured:0})
+          this.promotedWhitePawns = 0;
+          this.promotedBlackPawns = 0;
+          this.whiteQueens = 0;
+          this.whiteRooks = 0;
+          this.whiteBishops = 0;
+          this.whiteKnights = 0;
+      }
+      else{
       this.captured();
+    }
 
     }
 
@@ -44,11 +64,11 @@ export default class Captured extends Component {
     //the number of pieces is the start number plus the number of pieces promoted to that piece
     let whitePawns, blackPawns, whiteQueens, blackQueens, whiteRooks, whiteKnights, whiteBishops, blackRooks, blackKnights, blackBishops;
     whitePawns = 8 - this.promotedWhitePawns;
-    blackPawns = 8;
+    blackPawns = 8 - this.promotedBlackPawns;
     whiteQueens = 1 + this.whiteQueens;
-    blackQueens = 1;
+    blackQueens = 1 + this.blackQueens;
     whiteRooks = 2 + this.whiteRooks; whiteKnights = 2 + this.whiteKnights; whiteBishops = 2+ this.whiteBishops
-    blackRooks = blackKnights = blackBishops = 2;
+    blackRooks = 2 + this.blackRooks; blackKnights = 2 + this.blackKnights; blackBishops = 2 + this.blackBishops;
 
 
     //subtract 1 from each total for every piece on the board = how many captured
@@ -123,6 +143,25 @@ export default class Captured extends Component {
       blackPawns--;
       blackQueens ++;
     }
+    if(blackRooks - this.state.blackRooksCaptured < 0){
+      this.promotedblackPawns++;
+      this.blackRooks++;
+      blackPawns--;
+      blackRooks ++;
+    }
+    if(blackKnights - this.state.blackKnightsCaptured < 0){
+      this.promotedblackPawns++;
+      this.blackKnights++;
+      blackPawns--;
+      blackKnights ++;
+    }
+    if(blackBishops - this.state.blackBishopsCaptured < 0){
+      this.promotedblackPawns++;
+      this.blackBishops++;
+      blackPawns--;
+      blackBishops ++;
+    }
+
     //just repeat the above code but for rooks, bishops, and knights
     //update the state with the new number of captured pieces
     this.setState({whitePawnsCaptured:whitePawns, whiteRooksCaptured:whiteRooks, whiteKnightsCaptured:whiteKnights,

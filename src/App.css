@@ -23,11 +23,11 @@ border-collapse: collapse;
 min-width: 400px;
 
 }
-table.table, table.table tr, table.table td{
+.squares, .squares tr, .squares td{
 
   margin: auto;
 }
-table.table td {
+.squares td {
   height: 65px;
   width: 65px;
   text-align: center;
@@ -114,9 +114,30 @@ table tr:nth-child(odd) td:nth-child(even) {
 }
 
 @media all and (max-device-width: 667px) and (orientation: portrait){
-
-  .bigDiv{
-
+  html, body {
+  overflow-x: hidden;
+  }
+  body {
+  position: relative
+  }
+  .mobile{
+    padding: 0px;
+    margin: auto;
+    overflow: hidden;
+  }
+  .mobileControl{
+    text-align: center;
+  }
+  .mobileControl button{
+    height: 50px;
+    width: 90px;
+    margin-right: 10px;
+    vertical-align: middle;
+    font-size: 16px;
+  }
+  .mobileControl p{
+    display: inline-block;
+    vertical-align: middle;
   }
   table{
     border-collapse: collapse;
@@ -124,27 +145,40 @@ table tr:nth-child(odd) td:nth-child(even) {
   .board{
     padding-top: 10px;
   }
-  table.table td{
-    width: calc(95vw/8);
-    height: calc(95vw/8);
+  .squares td{
+    width: calc(96vw/8);
+    height: calc(96vw/8);
+    display: inline-block;
+  }
+  .squares{
+    margin:0px;
   }
 }
 @media all and (max-device-width: 667px) and (orientation: landscape){
-
-  .bigDiv{
-
-  }
   table{
     border-collapse: collapse;
   }
   .board{
     padding: 0px
   }
+  .mobileControl{
+    position: absolute;
+    margin-top: 10px;
+    top: 50px;
+    right: 25px;
+    text-align: center;
+  }
+  .mobileControl button{
+    height: 50px;
+    width: 90px;
+    display: block;
+    font-size: 16px;
+  }
 
-  table.table td{
+  .squares td{
     width: calc(95vh/8);
     height: calc(95vh/8);
-    text-align: center;
+    display: inline-block;
   }
   .capturedWhiteDiv{
       height: 30px;
@@ -154,13 +188,13 @@ table tr:nth-child(odd) td:nth-child(even) {
       position: absolute;
       top:10px;
       left:5px;
-      width:140px;
+      width:135px;
     }
     .capturedBlackDiv{
         display:flex;
         flex-direction: column;
         text-align: left;
-        width: 140px;
+        width: 135px;
         height: 30px;
         position: absolute;
         bottom:60px;

@@ -88,7 +88,7 @@ export default class Board extends Component{
   render(){
     return(
       <div  className = 'board'>
-        <table className = 'table'>
+        <table className = 'squares'>
           <tbody>
             <tr>
               <td id = 'a8' className = {this.props.chooseClass('a8')} onClick = {this.props.onClick} style = {this.returnPiece(this.state.pieceArray[0])}></td>

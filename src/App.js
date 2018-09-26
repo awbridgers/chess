@@ -5,6 +5,7 @@ import Board from './board.js'
 import Captured from './captured.js';
 import Promote from './promote.js';
 import Controller from './controller.js';
+import MediaQuery from 'react-responsive';
 
 //import stockfish.js as a worker so it can run in the background per the instructions in the readme.
 //used https://medium.com/@danilog1905/how-to-use-web-workers-with-react-create-app-and-not-ejecting-in-the-attempt-3718d2a1166b
@@ -266,22 +267,39 @@ class App extends Component {
     } = this.state;
 
     return (
-      <div className = 'bigDiv'>
-        {choosePromo && (
-          <Promote onClick={this.promote}/>
-        )}
-        <div className = 'boardDiv'>
-          <div className = 'gameBoard'>
+      <div>
+        <MediaQuery query="(min-device-width: 1224px)">
+          <div className = 'bigDiv'>
+            {choosePromo && (
+              <Promote onClick={this.promote}/>
+            )}
+            <div className = 'boardDiv'>
+              <div className = 'gameBoard'>
+                <Captured fen={fen} color ="white"/>
+                <Board onClick={this.clickSquare} chooseClass={this.chooseTarget} fen={fen}/>
+                <Captured fen={fen} color="black"/>
+              </div>
+              <div className = 'controller'>
+                <Controller undo = {this.undo} hint = {this.hint} newGame = {this.newGame} />
+              </div>
+            </div>
+          </div>
+        </MediaQuery>
+        <MediaQuery query="(max-device-width: 1224px)">
+          <div className = 'mobile'>
+            {choosePromo && (
+              <Promote onClick={this.promote}/>
+            )}
             <Captured fen={fen} color ="white"/>
             <Board onClick={this.clickSquare} chooseClass={this.chooseTarget} fen={fen}/>
             <Captured fen={fen} color="black"/>
+            <div className = 'mobileControl'>
+              <Controller undo = {this.undo} hint = {this.hint} newGame = {this.newGame} />
+            </div>
           </div>
-          <div className = 'controller'>
-            <Controller undo = {this.undo} hint = {this.hint} newGame = {this.newGame} />
-          </div>
-        </div>
-        
+        </MediaQuery>
       </div>
+
 
     );
   }
